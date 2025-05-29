@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Library</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.2rem;
+        }
+        .nav-links {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            margin: 0 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        .controls {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        /* Console choices as horizontal scrollable buttons */
+        .console-choices-bar {
+            display: flex;
+            gap: 1.2rem;
+            overflow-x: auto;
+            padding: 1.2rem 0.5rem 0.5rem 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #667eea #f0f0f0;
+            margin-bottom: 0.5rem;
+        }
+        .console-choice {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #e8eafc 0%, #d2d7fd 100%);
+            border: 2.5px solid #667eea44;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #667eea14;
+            min-width: 92px;
+            max-width: 120px;
+            padding: 0.9rem 1.1rem 0.7rem 1.1rem;
+            cursor: pointer;
+            transition: transform 0.13s, border-color 0.17s, background 0.18s;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #374285;
+            position: relative;
+            user-select: none;
+            outline: none;
+        }
+        .console-choice.selected, .console-choice:focus {
+            background: linear-gradient(135deg, #667eea 10%, #764ba2 90%);
+            color: #fff;
+            border-color: #764ba2;
+            transform: scale(1.075);
+            z-index: 1;
+        }
+        .console-choice .console-emoji {
+            font-size: 2.1rem;
+            margin-bottom: 0.38rem;
+            text-shadow: 0 2px 10px #667eea33;
+        }
+        .console-choice .console-name {
+            text-align: center;
+            font-size: 1.01rem;
+            word-break: break-word;
+        }
+        /* Hide default select */
+        .custom-select { display: none; }
+
+        /* Game list styles */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        .game-card {
+            background: #181a32;
+            border-radius: 18px;
+            padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+            box-shadow: 0 8px 32px rgba(46, 51, 88, 0.18), 0 1.5px 0 #667eea88 inset;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.18s, box-shadow 0.18s;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at 30% 30%, #667eea66 0%, transparent 70%);
+            z-index: 0;
+        }
+        .game-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #242654;
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.7rem;
+            color: #aab1ec;
+            box-shadow: 0 4px 16px #667eea22;
+            border: 2px solid #2e3072;
+            overflow: hidden;
+        }
+        .game-card h3 {
+            color: #fff;
+            margin-bottom: 0.4rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            z-index: 1;
+            text-align: center;
+        }
+        .game-card .game-size {
+            color: #aab1ec;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            z-index: 1;
+        }
+        .btn-play {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.8rem;
+            transition: background 0.2s, transform 0.15s;
+            z-index: 1;
+        }
+        .btn-play:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.2);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .empty-state h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        .empty-state p {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #222;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.65);
+            max-width: 95vw;
+            max-height: 95vh;
+            overflow: auto;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            right: 12px; top: 12px;
+            color: white; background: none;
+            border: none; font-size: 2rem;
+            cursor: pointer;
+            z-index: 1010;
+        }
+        .modal #game {
+            width: 70vw;
+            height: 60vh;
+            min-width: 320px;
+            min-height: 240px;
+            background: #000;
+        }
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            .console-choices-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-x: visible;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .modal #game { width: 90vw; height: 40vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎮 Game Library</h1>
+            <p>Your personal retro gaming collection</p>
+        </header>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/management">Manage Library</a>
+        </div>
+
+        <div class="controls">
+            <!-- Visually enhanced console choices bar -->
+            <div class="console-choices-bar" id="consoleChoicesBar"></div>
+            <!-- Fallback hidden select for accessibility or if JS fails -->
+            <div class="custom-select">
+                <label for="consoleSelect" style="margin-bottom:0.5rem;display:block;">Select Console</label>
+                <select id="consoleSelect">
+                    <option value="">Choose a console...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="gamesContainer">
+            <div class="empty-state">
+                <h2>Welcome to Your Game Library!</h2>
+                <p>Select a console above to view your games, or visit the management page to add new consoles and games.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for EmulatorJS player -->
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePlayerModal()">&times;</button>
+            <div id="game"></div>
+        </div>
+    </div>
+
+    <script>
+        // Always use controller emoji for consoles and games
+        const CONTROLLER_EMOJI = "🎮";
+
+        class GameLibrary {
+            constructor() {
+                this.library = {};
+                this.selectedConsole = null;
+
+                this.elements = {
+                    consoleChoicesBar: document.getElementById('consoleChoicesBar'),
+                    consoleSelect: document.getElementById('consoleSelect'),
+                    gamesContainer: document.getElementById('gamesContainer')
+                };
+
+                this.init();
+            }
+
+            async init() {
+                await this.loadLibrary();
+                this.populateConsoles();
+                this.setupEventListeners();
+            }
+
+            async loadLibrary() {
+                try {
+                    const response = await fetch('/api/library');
+                    this.library = await response.json();
+                } catch (error) {
+                    console.error('Failed to load library:', error);
+                    this.showError('Failed to load game library');
+                }
+            }
+
+            setupEventListeners() {
+                // Fallback select for accessibility (not used for normal flow)
+                this.elements.consoleSelect.addEventListener('change', (e) => {
+                    this.handleConsoleSelection(e.target.value);
+                });
+            }
+
+            populateConsoles() {
+                const consoles = this.library.consoles || {};
+                // Populate fallback select
+                this.elements.consoleSelect.innerHTML = '<option value="">Choose a console...</option>';
+                // Populate bar
+                this.elements.consoleChoicesBar.innerHTML = '';
+                const consoleIds = Object.keys(consoles);
+                if (consoleIds.length === 0) {
+                    this.showEmptyLibrary();
+                    return;
+                }
+                consoleIds.forEach(id => {
+                    const console = consoles[id];
+                    // Fallback select option
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = CONTROLLER_EMOJI + " " + console.name;
+                    this.elements.consoleSelect.appendChild(option);
+                    // Bar button
+                    const btn = document.createElement('button');
+                    btn.className = 'console-choice';
+                    btn.setAttribute('type', 'button');
+                    btn.setAttribute('tabindex', '0');
+                    btn.setAttribute('aria-label', console.name);
+                    btn.dataset.consoleId = id;
+                    btn.innerHTML = `
+                        <span class="console-emoji">${CONTROLLER_EMOJI}</span>
+                        <span class="console-name">${console.name}</span>
+                    `;
+                    btn.onclick = () => this.handleConsoleSelection(id);
+                    btn.onkeydown = (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            this.handleConsoleSelection(id);
+                        }
+                    };
+                    this.elements.consoleChoicesBar.appendChild(btn);
+                });
+            }
+
+            handleConsoleSelection(consoleId) {
+                if (this.selectedConsole === consoleId) return;
+                this.selectedConsole = consoleId;
+                // Update bar selection
+                [...this.elements.consoleChoicesBar.children].forEach(btn => {
+                    if (btn.dataset.consoleId === consoleId) {
+                        btn.classList.add('selected');
+                        btn.setAttribute('aria-current', 'true');
+                    } else {
+                        btn.classList.remove('selected');
+                        btn.removeAttribute('aria-current');
+                    }
+                });
+                // Update fallback select
+                this.elements.consoleSelect.value = consoleId;
+                if (!consoleId) {
+                    this.showEmptyState();
+                    return;
+                }
+                this.displayGames(consoleId);
+            }
+
+            displayGames(consoleId) {
+                const console = this.library.consoles[consoleId];
+                const games = console.games || {};
+                if (Object.keys(games).length === 0) {
+                    this.elements.gamesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <h2>No Games Found</h2>
+                            <p>This console doesn't have any games yet. Visit the management page to add some!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                const gamesHtml = Object.entries(games).map(([id, game]) => {
+                    return `
+                        <div class="game-card">
+                            <span class="game-thumb">${CONTROLLER_EMOJI}</span>
+                            <h3>${game.name}</h3>
+                            <p class="game-size">${this.formatFileSize(game.size || 0)}</p>
+                            <button class="btn-play" onclick="gameLibrary.launchGame('${consoleId}','${id}')">Play</button>
+                        </div>
+                    `;
+                }).join('');
+                this.elements.gamesContainer.innerHTML = `
+                    <div class="games-grid">
+                        ${gamesHtml}
+                    </div>
+                `;
+            }
+
+            showEmptyState() {
+                this.elements.gamesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h2>Welcome to Your Game Library!</h2>
+                        <p>Select a console above to view your games, or visit the management page to add new consoles and games.</p>
+                    </div>
+                `;
+            }
+
+            showEmptyLibrary() {
+                this.elements.gamesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h2>Library is Empty</h2>
+                        <p>You don't have any consoles or games yet. Visit the <a href="/management" style="color: white; text-decoration: underline;">management page</a> to start building your library.</p>
+                    </div>
+                `;
+            }
+
+            showError(message) {
+                this.elements.gamesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h2>Error</h2>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // EmulatorJS Integration
+            launchGame(consoleId, gameId) {
+                const console = this.library.consoles[consoleId];
+                const game = console.games[gameId];
+                const coreName = consoleId; // Map if needed
+                const gameUrl = `/games/${consoleId}/${encodeURIComponent(game.filename)}`;
+                showPlayerModal(coreName, gameUrl);
+            }
+        }
+
+        // Initialize the game library
+        const gameLibrary = new GameLibrary();
+
+        // Modal and EmulatorJS support
+        function showPlayerModal(coreName, gameUrl) {
+            const modal = document.getElementById('playerModal');
+            const gameDiv = document.getElementById('game');
+            gameDiv.innerHTML = '';
+            const oldScript = document.getElementById('ejs-loader');
+            if (oldScript) oldScript.remove();
+
+            window.EJS_player = "#game";
+            window.EJS_core = coreName;
+            window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+            window.EJS_gameUrl = gameUrl;
+
+            const script = document.createElement('script');
+            script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+            script.id = "ejs-loader";
+            document.body.appendChild(script);
+            modal.classList.add('active');
+        }
+
+        function closePlayerModal() {
+            const modal = document.getElementById('playerModal');
+            modal.classList.remove('active');
+            const oldScript = document.getElementById('ejs-loader');
+            if (oldScript) oldScript.remove();
+            document.getElementById('game').innerHTML = '';
+            delete window.EJS_player;
+            delete window.EJS_core;
+            delete window.EJS_pathtodata;
+            delete window.EJS_gameUrl;
+        }
+
+        window.addEventListener('keydown', function(e){
+            if (e.key === "Escape") closePlayerModal();
+        });
+    </script>
+</body>
+</html>

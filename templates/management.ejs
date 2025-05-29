@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Library Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            margin: 0 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .console-list, .game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .console-item, .game-item {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .console-item:hover, .game-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .console-item.selected, .game-item.selected {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .console-item h3, .game-item h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .console-item p, .game-item p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-upload.dragover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-text {
+            color: #667eea;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .console-list, .game-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🛠️ Game Library Management</h1>
+            <p>Manage your consoles and games</p>
+        </header>
+
+        <div class="nav-links">
+            <a href="/">View Library</a>
+            <a href="/management">Manage Library</a>
+        </div>
+
+        <!-- Console Management Section -->
+        <div class="section">
+            <h2>Console Management</h2>
+            <div class="two-column">
+                <div>
+                    <div class="form-group">
+                        <label for="consoleName">Console Name</label>
+                        <input type="text" id="consoleName" placeholder="e.g., Nintendo 64, PlayStation, Game Boy">
+                    </div>
+                    <button class="btn" onclick="addConsole()">Add Console</button>
+                </div>
+                <div>
+                    <h3>Existing Consoles</h3>
+                    <div class="console-list" id="consoleList">
+                        <!-- Consoles will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Management Section -->
+        <div class="section">
+            <h2>Game Management</h2>
+            
+            <div class="form-group">
+                <label for="selectedConsole">Select Console</label>
+                <select id="selectedConsole" onchange="selectConsole()">
+                    <option value="">Choose a console...</option>
+                </select>
+            </div>
+
+            <div id="gameManagement" style="display: none;">
+                <div class="two-column">
+                    <div>
+                        <h3>Upload New Game</h3>
+                        <div class="form-group">
+                            <label for="gameName">Game Name</label>
+                            <input type="text" id="gameName" placeholder="Game title (optional)">
+                        </div>
+                        
+                        <div class="file-upload" onclick="document.getElementById('gameFile').click()">
+                            <input type="file" id="gameFile" accept=".zip,.rar,.7z,.gz,.rom,.bin,.iso,.nes,.smc,.gba,.nds" onchange="handleFileSelect(this)">
+                            <div class="file-upload-text">
+                                📁 Click to select game file<br>
+                                <small>Supported: .zip, .rar, .7z, .gz, .rom, .bin, .iso, .nes, .smc, .gba, .nds</small>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar" id="uploadProgress">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        
+                        <button class="btn" onclick="uploadGame()" id="uploadBtn" disabled>Upload Game</button>
+                    </div>
+                    
+                    <div>
+                        <h3>Console Games</h3>
+                        <div class="game-list" id="gameList">
+                            <!-- Games will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="message" id="messageBox"></div>
+    </div>
+
+    <script>
+        class GameManager {
+            constructor() {
+                this.library = {};
+                this.selectedConsoleId = null;
+                this.selectedFile = null;
+                
+                this.init();
+            }
+
+            async init() {
+                await this.loadLibrary();
+                this.populateConsoles();
+                this.displayConsoles();
+                this.setupDragAndDrop();
+            }
+
+            async loadLibrary() {
+                try {
+                    const response = await fetch('/api/library');
+                    this.library = await response.json();
+                } catch (error) {
+                    console.error('Failed to load library:', error);
+                    this.showMessage('Failed to load library', 'error');
+                }
+            }
+
+            populateConsoles() {
+                const select = document.getElementById('selectedConsole');
+                select.innerHTML = '<option value="">Choose a console...</option>';
+                
+                Object.entries(this.library.consoles || {}).forEach(([id, console]) => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = console.name;
+                    select.appendChild(option);
+                });
+            }
+
+            displayConsoles() {
+                const container = document.getElementById('consoleList');
+                const consoles = this.library.consoles || {};
+                
+                if (Object.keys(consoles).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">No consoles added yet</p>';
+                    return;
+                }
+
+                container.innerHTML = Object.entries(consoles).map(([id, console]) => {
+                    const gameCount = Object.keys(console.games || {}).length;
+                    return `
+                        <div class="console-item">
+                            <h3>${console.name}</h3>
+                            <p>${gameCount} games</p>
+                            <button class="btn btn-danger" onclick="removeConsole('${id}')">Remove Console</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            async addConsole() {
+                const name = document.getElementById('consoleName').value.trim();
+                if (!name) {
+                    this.showMessage('Please enter a console name', 'error');
+                    return;
+                }
+
+                const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                
+                try {
+                    const response = await fetch('/api/console', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id, name })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        this.showMessage('Console added successfully!', 'success');
+                        document.getElementById('consoleName').value = '';
+                        await this.loadLibrary();
+                        this.populateConsoles();
+                        this.displayConsoles();
+                    } else {
+                        this.showMessage(result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error adding console:', error);
+                    this.showMessage('Failed to add console', 'error');
+                }
+            }
+
+            async removeConsole(consoleId) {
+                if (!confirm('Are you sure you want to remove this console and all its games?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/console/${consoleId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        this.showMessage('Console removed successfully!', 'success');
+                        await this.loadLibrary();
+                        this.populateConsoles();
+                        this.displayConsoles();
+                        
+                        if (this.selectedConsoleId === consoleId) {
+                            this.selectedConsoleId = null;
+                            document.getElementById('selectedConsole').value = '';
+                            document.getElementById('gameManagement').style.display = 'none';
+                        }
+                    } else {
+                        this.showMessage(result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error removing console:', error);
+                    this.showMessage('Failed to remove console', 'error');
+                }
+            }
+
+            selectConsole() {
+                const select = document.getElementById('selectedConsole');
+                this.selectedConsoleId = select.value;
+                
+                if (this.selectedConsoleId) {
+                    document.getElementById('gameManagement').style.display = 'block';
+                    this.displayGames();
+                } else {
+                    document.getElementById('gameManagement').style.display = 'none';
+                }
+            }
+
+            displayGames() {
+                const container = document.getElementById('gameList');
+                const console = this.library.consoles[this.selectedConsoleId];
+                const games = console?.games || {};
+                
+                if (Object.keys(games).length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666;">No games uploaded yet</p>';
+                    return;
+                }
+
+                container.innerHTML = Object.entries(games).map(([id, game]) => `
+                    <div class="game-item">
+                        <h3>${game.name}</h3>
+                        <p><strong>File:</strong> ${game.filename}</p>
+                        <p><strong>Size:</strong> ${this.formatFileSize(game.size || 0)}</p>
+                        <button class="btn btn-danger" onclick="removeGame('${id}')">Remove Game</button>
+                    </div>
+                `).join('');
+            }
+
+            handleFileSelect(input) {
+                this.selectedFile = input.files[0];
+                const uploadBtn = document.getElementById('uploadBtn');
+                
+                if (this.selectedFile) {
+                    uploadBtn.disabled = false;
+                    document.querySelector('.file-upload-text').innerHTML = `
+                        📁 ${this.selectedFile.name}<br>
+                        <small>Size: ${this.formatFileSize(this.selectedFile.size)}</small>
+                    `;
+                    
+                    // Auto-fill game name if not provided
+                    const gameNameInput = document.getElementById('gameName');
+                    if (!gameNameInput.value) {
+                        const nameWithoutExt = this.selectedFile.name.replace(/\.[^/.]+$/, "");
+                        gameNameInput.value = nameWithoutExt;
+                    }
+                } else {
+                    uploadBtn.disabled = true;
+                }
+            }
+
+            async uploadGame() {
+                if (!this.selectedFile || !this.selectedConsoleId) {
+                    this.showMessage('Please select a console and file', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('game_file', this.selectedFile);
+                formData.append('game_name', document.getElementById('gameName').value || this.selectedFile.name);
+
+                const progressBar = document.getElementById('uploadProgress');
+                const progressFill = document.getElementById('progressFill');
+                const uploadBtn = document.getElementById('uploadBtn');
+                
+                progressBar.style.display = 'block';
+                uploadBtn.disabled = true;
+
+                try {
+                    const xhr = new XMLHttpRequest();
+                    
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percentComplete = (e.loaded / e.total) * 100;
+                            progressFill.style.width = percentComplete + '%';
+                        }
+                    };
+
+                    xhr.onload = async () => {
+                        if (xhr.status === 200) {
+                            this.showMessage('Game uploaded successfully!', 'success');
+                            await this.loadLibrary();
+                            this.displayGames();
+                            this.resetUploadForm();
+                        } else {
+                            const result = JSON.parse(xhr.responseText);
+                            this.showMessage(result.error, 'error');
+                        }
+                        progressBar.style.display = 'none';
+                        uploadBtn.disabled = false;
+                    };
+
+                    xhr.onerror = () => {
+                        this.showMessage('Upload failed', 'error');
+                        progressBar.style.display = 'none';
+                        uploadBtn.disabled = false;
+                    };
+
+                    xhr.open('POST', `/api/game/${this.selectedConsoleId}`);
+                    xhr.send(formData);
+
+                } catch (error) {
+                    console.error('Error uploading game:', error);
+                    this.showMessage('Failed to upload game', 'error');
+                    progressBar.style.display = 'none';
+                    uploadBtn.disabled = false;
+                }
+            }
+
+            async removeGame(gameId) {
+                if (!confirm('Are you sure you want to remove this game?')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/game/${this.selectedConsoleId}/${gameId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        this.showMessage('Game removed successfully!', 'success');
+                        await this.loadLibrary();
+                        this.displayGames();
+                    } else {
+                        this.showMessage(result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error removing game:', error);
+                    this.showMessage('Failed to remove game', 'error');
+                }
+            }
+
+            resetUploadForm() {
+                document.getElementById('gameName').value = '';
+                document.getElementById('gameFile').value = '';
+                document.getElementById('uploadBtn').disabled = true;
+                document.querySelector('.file-upload-text').innerHTML = `
+                    📁 Click to select game file<br>
+                    <small>Supported: .zip, .rar, .7z, .gz, .rom, .bin, .iso, .nes, .smc, .gba, .nds</small>
+                `;
+                this.selectedFile = null;
+            }
+
+            setupDragAndDrop() {
+                const fileUpload = document.querySelector('.file-upload');
+                
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, () => {
+                        fileUpload.classList.add('dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, () => {
+                        fileUpload.classList.remove('dragover');
+                    });
+                });
+
+                fileUpload.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        document.getElementById('gameFile').files = files;
+                        this.handleFileSelect(document.getElementById('gameFile'));
+                    }
+                });
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            showMessage(message, type) {
+                const messageBox = document.getElementById('messageBox');
+                messageBox.textContent = message;
+                messageBox.className = `message ${type}`;
+                messageBox.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageBox.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Global functions for inline event handlers
+        const gameManager = new GameManager();
+
+        function addConsole() {
+            gameManager.addConsole();
+        }
+
+        function removeConsole(consoleId) {
+            gameManager.removeConsole(consoleId);
+        }
+
+        function selectConsole() {
+            gameManager.selectConsole();
+        }
+
+        function handleFileSelect(input) {
+            gameManager.handleFileSelect(input);
+        }
+
+        function uploadGame() {
+            gameManager.uploadGame();
+        }
+
+        function removeGame(gameId) {
+            gameManager.removeGame(gameId);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "consoles": {
+    "gba": {
+      "name": "gba",
+      "games": {
+        "pokemon_-_emerald_version_usa_europe.zip": {
+          "name": "Pokemon - Emerald Version (USA, Europe)",
+          "filename": "Pokemon_-_Emerald_Version_USA_Europe.zip",
+          "path": "games\\gba\\Pokemon_-_Emerald_Version_USA_Europe.zip",
+          "size": 6791514
+        },
+        "grand_theft_auto_advance.zip": {
+          "name": "Grand Theft Auto Advance",
+          "filename": "Grand_Theft_Auto_Advance.zip",
+          "path": "games\\gba\\Grand_Theft_Auto_Advance.zip",
+          "size": 5565444
+        },
+        "legend_of_zelda_the__the_minish_cap.zip": {
+          "name": "Legend of Zelda, The_ The Minish Cap",
+          "filename": "Legend_of_Zelda_The__The_Minish_Cap.zip",
+          "path": "games\\gba\\Legend_of_Zelda_The__The_Minish_Cap.zip",
+          "size": 7253236
+        },
+        "sonic_advance_3_usa_enjafrdeesit.zip": {
+          "name": "Sonic Advance 3 (USA) (En,Ja,Fr,De,Es,It)",
+          "filename": "Sonic_Advance_3_USA_EnJaFrDeEsIt.zip",
+          "path": "games\\gba\\Sonic_Advance_3_USA_EnJaFrDeEsIt.zip",
+          "size": 4166619
+        },
+        "super_mario_advance_2__super_mario_world.zip": {
+          "name": "Super Mario Advance 2_ Super Mario World",
+          "filename": "Super_Mario_Advance_2__Super_Mario_World.zip",
+          "path": "games\\gba\\Super_Mario_Advance_2__Super_Mario_World.zip",
+          "size": 1503859
+        },
+        "super_mario_advance_4_-_super_mario_bros_3_emenace.zip": {
+          "name": "Super Mario Advance 4 - Super Mario Bros 3 (E)(Menace)",
+          "filename": "Super_Mario_Advance_4_-_Super_Mario_Bros_3_EMenace.zip",
+          "path": "games\\gba\\Super_Mario_Advance_4_-_Super_Mario_Bros_3_EMenace.zip",
+          "size": 2702032
+        }
+      }
+    },
+    "psx": {
+      "name": "psx",
+      "games": {
+        "marvel_vs._capcom_-_clashofthe_superheroes01059.rar": {
+          "name": "Marvel vs. Capcom - Clashofthe SuperHeroes[01059]",
+          "filename": "Marvel_vs._Capcom_-_Clashofthe_SuperHeroes01059.rar",
+          "path": "games\\psx\\Marvel_vs._Capcom_-_Clashofthe_SuperHeroes01059.rar",
+          "size": 239373533
+        }
+      }
+    }
+  }
+}
