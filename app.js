@@ -73,12 +73,12 @@ app.get('/proxy/3000/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-app.post('/login', (req, res) => {
+app.post('/proxy/3000/login', (req, res) => {
   const { username, password } = req.body;
   // Replace with your own authentication logic!
   if (username === 'bien' && password === 'adminPassword123') {
     req.session.logged_in = true;
-    res.redirect('/management');
+    res.redirect('/proxy/3000/management');
   } else {
     res.render('login', { error: 'Invalid credentials' });
   }
