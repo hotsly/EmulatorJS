@@ -324,7 +324,7 @@
 
             async loadLibrary() {
                 try {
-                    const response = await fetch('/api/library');
+                    const response = await fetch('/proxy/3000/api/library');
                     this.library = await response.json();
                 } catch (error) {
                     console.error('Failed to load library:', error);
@@ -470,7 +470,7 @@
                 const console = this.library.consoles[consoleId];
                 const game = console.games[gameId];
                 const coreName = consoleId; // Map if needed
-                const gameUrl = `/games/${consoleId}/${encodeURIComponent(game.filename)}`;
+                const gameUrl = `/proxy/3000/games/${consoleId}/${encodeURIComponent(game.filename)}`;
                 showPlayerModal(coreName, gameUrl);
             }
         }

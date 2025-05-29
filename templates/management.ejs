@@ -266,8 +266,8 @@
         </header>
 
         <div class="nav-links">
-            <a href="/">View Library</a>
-            <a href="/management">Manage Library</a>
+            <a href="/proxy/3000/">View Library</a>
+            <a href="/proxy/3000/management">Manage Library</a>
         </div>
 
         <!-- Console Management Section -->
@@ -357,7 +357,7 @@
 
             async loadLibrary() {
                 try {
-                    const response = await fetch('/api/library');
+                    const response = await fetch('/proxy/3000/api/library');
                     this.library = await response.json();
                 } catch (error) {
                     console.error('Failed to load library:', error);
@@ -408,7 +408,7 @@
                 const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
                 
                 try {
-                    const response = await fetch('/api/console', {
+                    const response = await fetch('/proxy/3000/api/console', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -439,7 +439,7 @@
                 }
 
                 try {
-                    const response = await fetch(`/api/console/${consoleId}`, {
+                    const response = await fetch(`/proxy/3000/api/console/${consoleId}`, {
                         method: 'DELETE'
                     });
 
@@ -566,7 +566,7 @@
                         uploadBtn.disabled = false;
                     };
 
-                    xhr.open('POST', `/api/game/${this.selectedConsoleId}`);
+                    xhr.open('POST', `/proxy/3000/api/game/${this.selectedConsoleId}`);
                     xhr.send(formData);
 
                 } catch (error) {
@@ -583,7 +583,7 @@
                 }
 
                 try {
-                    const response = await fetch(`/api/game/${this.selectedConsoleId}/${gameId}`, {
+                    const response = await fetch(`/proxy/3000/api/game/${this.selectedConsoleId}/${gameId}`, {
                         method: 'DELETE'
                     });
 

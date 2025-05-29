@@ -64,12 +64,12 @@ function loginRequired(req, res, next) {
 }
 
 // Routes
-app.get('/', (req, res) => {
+app.get('/proxy/3000/', (req, res) => {
   const library = loadLibrary();
   res.render('index', { library });
 });
 
-app.get('/login', (req, res) => {
+app.get('/proxy/3000/login', (req, res) => {
   res.render('login', { error: null });
 });
 
@@ -84,22 +84,22 @@ app.post('/login', (req, res) => {
   }
 });
 
-app.get('/logout', (req, res) => {
+app.get('/proxy/3000/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-app.get('/management', (req, res) => {
+app.get('/proxy/3000/management', (req, res) => {
   if (!isLoggedIn(req)) return res.redirect('/login');
   const library = loadLibrary();
   res.render('management', { library });
 });
 
 // API Endpoints
-app.get('/api/library', (req, res) => {
+app.get('/proxy/3000/api/library', (req, res) => {
   res.json(loadLibrary());
 });
 
-app.post('/api/console', loginRequired, (req, res) => {
+app.post('/proxy/3000/api/console', loginRequired, (req, res) => {
   const { id, name } = req.body;
   const console_id = (id || '').toLowerCase().replace(/ /g, '_');
   if (!console_id || !name) return res.status(400).json({ error: 'Console ID and name are required' });
@@ -114,7 +114,7 @@ app.post('/api/console', loginRequired, (req, res) => {
 });
 
 // Static file serving for uploaded games (optional)
-app.use('/games', express.static(UPLOAD_FOLDER));
+app.use('/proxy/3000/games', express.static(UPLOAD_FOLDER));
 
 // Start server
 app.listen(PORT, () => {
